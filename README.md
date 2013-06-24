@@ -1,7 +1,4 @@
-Hipstatsrb
+HipStats
 ==========
 
-A ruby script that parses the HipChat JSON files to generate interesting charts about activity, ...
-
-This script requires you have the following gems:
-- Gruff
+HipStats is a sinatra application that shows you some statistics about how actively you use HipChat.

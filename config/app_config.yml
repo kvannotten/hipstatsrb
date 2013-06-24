@@ -1,0 +1,6 @@
+settings:
+  exclude_nicks: 
+      - GIT
+      - Jenkins
+      - LinguistGUI
+      

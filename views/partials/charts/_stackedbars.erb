@@ -1,0 +1,60 @@
+$('#<%= divId %>').highcharts({
+           chart: {
+               type: 'column'
+           },
+           title: {
+               text: '<%= title %>'
+           },
+           xAxis: {
+               categories: <%= categories %>,
+							labels: {
+							                    rotation: -40,
+							                    align: 'right',
+							                    style: {
+							                        fontSize: '10px',
+							                        fontFamily: 'Verdana, sans-serif'
+							                    }
+							                }
+           },
+           yAxis: {
+               min: 0,
+               title: {
+                   text: '<%= title_x %>'
+               },
+               stackLabels: {
+                   enabled: true,
+                   style: {
+                       fontWeight: 'bold',
+                       color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                   }
+               }
+           },
+           legend: {
+               align: 'right',
+               x: -100,
+               verticalAlign: 'top',
+               y: 20,
+               floating: true,
+               backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+               borderColor: '#CCC',
+               borderWidth: 1,
+               shadow: false
+           },
+           tooltip: {
+               formatter: function() {
+                   return '<b>'+ this.x +'</b><br/>'+
+                       this.series.name +': '+ this.y +'<br/>'+
+                       'Total: '+ this.point.stackTotal;
+               }
+           },
+           plotOptions: {
+               column: {
+                   stacking: 'normal',
+                   dataLabels: {
+                       enabled: false,
+                       color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                   }
+               }
+           },
+           series: <%= data %>
+       });

@@ -1,0 +1,63 @@
+.link:hover {
+background-color:#51a5c8;
+cursor:hand;
+}
+
+#pages li {
+display:inline;
+list-style-type:none;
+}
+
+.modal {
+display:none;
+position:fixed;
+z-index:1000;
+top:0;
+left:0;
+height:100%;
+width:100%;
+background:rgba(255,255,255,.8) url(/images/ajax-loader.gif) 50% 50% no-repeat;
+}
+
+body.loading {
+overflow:hidden;
+}
+
+body.loading .modal {
+display:block;
+}
+
+.alink {
+color:#2ba6cb;
+text-decoration:none;
+line-height:inherit;
+}
+
+.alink:hover,.alink:focus {
+color:#2795b6;
+cursor:hand;
+}
+
+.logheader {
+background-color:#efefef;
+border:solid 1px #000;
+border-bottom:0;
+padding:10px;
+}
+
+.logmessage {
+border:solid 1px #000;
+border-top:0;
+padding:10px;
+}
+
+div.ui-datepicker-header 
+a.ui-datepicker-prev,div.ui-datepicker-header 
+a.ui-datepicker-next
+{
+    display: none;  
+}
+
+.rowselected {
+background-color:#2BA6CB !important;
+}
