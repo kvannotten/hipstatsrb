@@ -12,7 +12,7 @@ class App < Sinatra::Base
   end
   
   get '/' do
-    
+    @title = "Rooms"
     
     erb :'pages/index'
   end
@@ -32,6 +32,11 @@ class App < Sinatra::Base
     response = Utilities.conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => @filter_date.strftime('%Y-%m-%d') }
     return {"error" => "The HipChat API returned an error."}.to_json if response.status.to_i > 200
     history = JSON.parse(response.body)["messages"]
+    
+    response = Utilities.conn.get '/v1/rooms/show', { :format => 'json', :auth_token => params[:token], :room_id => id }
+    return {"error" => "The HipChat API returned an error."}.to_json if response.status.to_i > 200
+    room_details = JSON.parse(response.body)["room"]
+    @title = room_details["name"]
     
     # this shouldn't be required, because we already ask for this date in the REST call
     history.reject! { |hist| DateTime.parse(hist["date"]).strftime("%d %b %Y") != @filter_date.strftime("%d %b %Y")  }
