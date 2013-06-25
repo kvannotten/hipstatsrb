@@ -27,6 +27,7 @@ class App < Sinatra::Base
   
   get '/room/:id' do |id|
     params[:from] = Date.today.strftime('%Y-%m-%d') unless params[:from]
+    params[:from] = Date.today.strftime('%Y-%m-%d') if DateTime.parse(params[:from]) > Date.today
     @filter_date = DateTime.parse(params[:from])
     
     response = Utilities.conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => @filter_date.strftime('%Y-%m-%d') }

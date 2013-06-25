@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/base'
 require 'faraday'
 require 'json'
+require 'yaml'
 
 require File.expand_path '../classes/helpers.rb', __FILE__
 require File.expand_path '../classes/utilities.rb', __FILE__
