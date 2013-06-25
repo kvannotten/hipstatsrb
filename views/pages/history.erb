@@ -1,4 +1,14 @@
 <div class="row">
+	<div class="small-2 small-offset-2 columns">
+			<a href="?token=<%= params[:token] %>&from=<%= (DateTime.parse(params[:from]) - 1).strftime('%Y-%m-%d') %>">&lt;&lt;</a>
+	</div>
+	<div class="small-2 small-offset-6 columns">
+		<% if params[:from] and DateTime.parse(params[:from]) < Date.today then %>
+			<a href="?token=<%= params[:token] %>&from=<%= (DateTime.parse(params[:from]) + 1).strftime('%Y-%m-%d') %>">&gt;&gt;</a>
+		<% end %>
+	</div>
+</div>
+<div class="row">
 	<div class-"small-12 columns" id="usersPerDate"></div>
 </div>
 

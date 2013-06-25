@@ -26,7 +26,8 @@ class App < Sinatra::Base
   end
   
   get '/room/:id' do |id|
-    @filter_date = Date.today - params[:ago].to_i
+    params[:from] = Date.today.strftime('%Y-%m-%d') unless params[:from]
+    @filter_date = DateTime.parse(params[:from])
     
     response = Utilities.conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => @filter_date.strftime('%Y-%m-%d') }
     return {"error" => "The HipChat API returned an error."}.to_json if response.status.to_i > 200
