@@ -1,0 +1,6 @@
+<h3 class="subheader">Select a room</h3>
+<ul>
+	<% @rooms.each do |room| %>
+		<li><a href="<%= "/room/#{room['room_id']}?token=#{params[:token]}" %>"><%= room['name'] %></a></li>
+	<% end %>
+</ul>

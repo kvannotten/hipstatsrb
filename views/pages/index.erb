@@ -1,3 +1,22 @@
-<% @rooms.each do |room| %>
-	<p><%= room["name"] %>: <%= room["room_id"] %></p>
-<% end %>
+<div class="row">
+	<div class="small-3 columns inline">
+		<label data-tooltip for="token" class="right inline has-tip" title="You can create this token in the HipChat configurations. The tokens needs to be an admin token.">Your HipChat Token: </label>
+	</div>
+	<div class="small-5 columns">
+		<input type="text" id="token" />
+	</div>
+	<div class="small-4 columns">
+		
+	</div>
+</div>
+<div class="row">
+	<div class="small-9 small-offset-3 columns">
+		<a href="#" class="tiny button radius" id="submittoken">Submit</a>
+	</div>
+</div>
+
+<div class="row">
+	<div class="small-12 columns" id="rooms">
+		
+	</div>
+</div>

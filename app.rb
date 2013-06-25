@@ -12,16 +12,24 @@ class App < Sinatra::Base
   end
   
   get '/' do
-    response = Utilities.conn.get '/v1/rooms/list', { :format => 'json', :auth_token => params[:token] }
-    @rooms = JSON.parse(response.body)["rooms"]
+    
     
     erb :'pages/index'
+  end
+  
+  get '/rooms' do
+    response = Utilities.conn.get '/v1/rooms/list', { :format => 'json', :auth_token => params[:token] }
+    return {"error" => "The HipChat API returned an error. Error code: #{response.status}"}.to_json if response.status.to_i > 200
+    
+    @rooms = JSON.parse(response.body)["rooms"]
+    render partial: 'rooms'
   end
   
   get '/room/:id' do |id|
     @filter_date = Date.today - params[:ago].to_i
     
     response = Utilities.conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => @filter_date.strftime('%Y-%m-%d') }
+    return {"error" => "The HipChat API returned an error."}.to_json if response.status.to_i > 200
     history = JSON.parse(response.body)["messages"]
     
     # this shouldn't be required, because we already ask for this date in the REST call
