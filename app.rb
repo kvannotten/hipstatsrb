@@ -4,50 +4,43 @@ class App < Sinatra::Base
   configure do
     set :hipchat_url, 'http://api.hipchat.com'
     set :app_config, YAML.load_file('config/app_config.yml')
-  end
-  
-  get '/' do
-    conn = Faraday.new(:url => settings.hipchat_url) do |faraday|
+    Utilities.conn = Faraday.new(:url => settings.hipchat_url) do |faraday|
       faraday.request  :url_encoded             # form-encode POST params
       faraday.response :logger                  # log requests to STDOUT
       faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
     end
-    
-    response = conn.get '/v1/rooms/list', { :format => 'json', :auth_token => params[:token] }
-    
+  end
+  
+  get '/' do
+    response = Utilities.conn.get '/v1/rooms/list', { :format => 'json', :auth_token => params[:token] }
     @rooms = JSON.parse(response.body)["rooms"]
     
     erb :'pages/index'
   end
   
   get '/room/:id' do |id|
-    conn = Faraday.new(:url => settings.hipchat_url) do |faraday|
-      faraday.request  :url_encoded             # form-encode POST params
-      faraday.response :logger                  # log requests to STDOUT
-      faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-    end
+    @filter_date = Date.today - params[:ago].to_i
     
-    response = conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => DateTime.now.strftime('%Y-%m-%d') }
-    
+    response = Utilities.conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => @filter_date.strftime('%Y-%m-%d') }
     history = JSON.parse(response.body)["messages"]
     
-    history.reject! { |hist| DateTime.parse(hist["date"]).strftime("%d %b %Y") != DateTime.now.strftime("%d %b %Y")  }
+    # this shouldn't be required, because we already ask for this date in the REST call
+    history.reject! { |hist| DateTime.parse(hist["date"]).strftime("%d %b %Y") != @filter_date.strftime("%d %b %Y")  }
     
+    # add the user names to an array so we can count it later
     tmp = []
-    
     history.each do |hist|
       next if settings.app_config["settings"]["exclude_nicks"].include? hist["from"]["name"]
-      entry = {}
-      entry["date"] = DateTime.parse(hist["date"]).strftime("%d %b %Y")
-      entry["name"] = hist["from"]["name"]
-      tmp << entry
+      tmp << hist["from"]["name"]
     end
     
+    # count messages
     res = Hash.new(0)
     tmp.each do |t|
-      res[t["name"]] += 1
+      res[t] += 1
     end
     
+    #build result for highcharts chart
     @result = []
     res.each do |k, v|
       t = {}
