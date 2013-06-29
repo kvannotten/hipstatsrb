@@ -9,6 +9,8 @@ class App < Sinatra::Base
       faraday.response :logger                  # log requests to STDOUT
       faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
     end
+    enable :sessions
+    set :session_secret, "dfs4SS3fds3Fw$GEG@fw"
   end
   
   get '/' do
@@ -20,6 +22,8 @@ class App < Sinatra::Base
   get '/rooms' do
     response = Utilities.conn.get '/v1/rooms/list', { :format => 'json', :auth_token => params[:token] }
     return {"error" => "The HipChat API returned an error. Error code: #{response.status}"}.to_json if response.status.to_i > 200
+    
+    session[:token] = params[:token]
     
     @rooms = JSON.parse(response.body)["rooms"]
     render partial: 'rooms'

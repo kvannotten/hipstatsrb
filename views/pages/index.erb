@@ -3,7 +3,7 @@
 		<label data-tooltip for="token" class="right inline has-tip" title="You can create this token in the HipChat configurations. The tokens needs to be an admin token.">Your HipChat Token: </label>
 	</div>
 	<div class="small-5 columns">
-		<input type="text" id="token" />
+		<input type="text" id="token" value="<%= session[:token] %>"/>
 	</div>
 	<div class="small-4 columns">
 		
@@ -14,7 +14,11 @@
 		<a href="#" class="tiny button radius" id="submittoken">Submit</a>
 	</div>
 </div>
-
+<% if session[:token] then %>
+<script type="text/javascript" charset="utf-8">
+	doTokenSubmit();
+</script>
+<% end %>
 <div class="row">
 	<div class="small-12 columns" id="rooms">
 		
