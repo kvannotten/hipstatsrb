@@ -18,7 +18,7 @@
 <script type="text/javascript" charset="utf-8">
 	$(function() {
 		
-		<%= render chart: 'pie', locals: { divId: 'usersPerDate', title: "Messages Per User on #{@filter_date.strftime('%d %b %Y')}", subtitle: 'Number of messages', data: @result.to_json } %>
+		<%= render chart: 'pie', locals: { divId: 'usersPerDate', title: "Messages Per User from #{@from_date.strftime('%d %b %Y')} to #{@to_date.strftime('%d %b %Y')}", subtitle: 'Number of messages', data: @result.to_json } %>
 		
 	});
 </script>

@@ -32,20 +32,24 @@ class App < Sinatra::Base
   get '/room/:id' do |id|
     params[:from] = Date.today.strftime('%Y-%m-%d') unless params[:from]
     params[:from] = Date.today.strftime('%Y-%m-%d') if DateTime.parse(params[:from]) > Date.today
-    @filter_date = DateTime.parse(params[:from])
+    params[:to] = params[:from] unless params[:to]
+    params[:to] = Date.today.strftime('%Y-%m-%d') if DateTime.parse(params[:from]) > Date.today
+    @from_date = DateTime.parse(params[:from])
+    @to_date = DateTime.parse(params[:to])
+    @to_date = @from_date if @from_date > @to_date
     
-    response = Utilities.conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => @filter_date.strftime('%Y-%m-%d') }
-    return {"error" => "The HipChat API returned an error."}.to_json if response.status.to_i > 200
-    history = JSON.parse(response.body)["messages"]
+    history = []
+    @from_date.upto @to_date do |day|
+      response = Utilities.conn.get '/v1/rooms/history', { :format => 'json', :auth_token => params[:token], :room_id => id, :date => day.strftime('%Y-%m-%d') }
+      return {"error" => "The HipChat API returned an error."}.to_json if response.status.to_i > 200
+      history += JSON.parse(response.body)["messages"]
+    end
     
     response = Utilities.conn.get '/v1/rooms/show', { :format => 'json', :auth_token => params[:token], :room_id => id }
     return {"error" => "The HipChat API returned an error."}.to_json if response.status.to_i > 200
     room_details = JSON.parse(response.body)["room"]
     @title = room_details["name"]
-    
-    # this shouldn't be required, because we already ask for this date in the REST call
-    history.reject! { |hist| DateTime.parse(hist["date"]).strftime("%d %b %Y") != @filter_date.strftime("%d %b %Y")  }
-    
+
     # add the user names to an array so we can count it later
     tmp = []
     history.each do |hist|
